@@ -21,6 +21,12 @@ htmlbones = """
         {}
       </pre></div>
     </body>
+    <footer>
+    <div>
+    <p> Request from: {}</p>
+    <p> Sistema desenvolvido para testes de dispobilidade de dados por API.<br />Carlos A. Schneider - 2020</p>
+    </div>
+    </footer>
   </html>
   """
 
@@ -63,8 +69,7 @@ app = Flask(__name__)
 
 def validar_chave(request):
   return True \
-    if (request.remote_addr in ['127.0.0.1', '0.0.0.0'] and \
-      request.headers.get('Authorization') == 'Supersecreto 123456') \
+    if request.headers.get('Authorization') == 'Supersecreto 123456' \
     else False
 
 # ***   INFORMACOES DE COMO USAR A API   ***
@@ -76,7 +81,8 @@ def readme():
 
 @app.route('/info.html', methods=['GET'])
 def readmeformated():
-  return htmlbones.format("Título", readme())
+  return htmlbones.format("Título", readme(), 
+  "{} - {} - {}".format(request.remote_addr, request.remote_user, request.user_agent))
 
 # ***   LEITURA DOS REGISTROS DA TABELA   ***
 @app.route('/load/', methods=['GET'])
